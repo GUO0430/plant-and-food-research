@@ -21,7 +21,7 @@ https://classic.yarnpkg.com/lang/en/docs/install/#windows-stable
 
 ### 2. Running the servers
 
-> Open Team15-CRM-Frontend folder \
+> Open plant-and-food-research folder \
 > In the CMD/ Terminal enter
 
     yarn start
