@@ -37,6 +37,7 @@ export default function MainPage() {
 
   const [loading, setLoading] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [showUpdateMessage, setShowUpdateMessage] = useState(false);
   const [data, setData] = useState({});
   const isError = (condition) => hasErrors && condition;
   const myId = "393115";
@@ -44,6 +45,12 @@ export default function MainPage() {
   const myRepoURL = "https://github.com/GUO0430/plant-and-food-research.git";
   const mySecret = "m0e8l2";
   const registerURL = `https://tweakplan.com/JavaScriptDemoSubmission-1.0/candidates?email=${email}&secret=${secret}`;
+
+  function wait(timeout) {
+    return new Promise(resolve => {
+        setTimeout(resolve, timeout);
+    });
+  }
 
   async function checkRegistration() {
     const response = await axios(registerURL, {
@@ -80,14 +87,11 @@ export default function MainPage() {
           if (response.data.length === 0) {
             setShowErrorMessage(true);
           } else {
-            console.log(response.data);
             setData(response.data);
             setRegistered(true);
             setHasErrors(false);
           }
-          // console.log(response);
         }
-        //console.log(response.data);
       } catch (e) {
         console.log(e.response);
       }
@@ -99,13 +103,16 @@ export default function MainPage() {
       // setLoading(true);
       const response = await submitRepo();
       if (response.status === 200) {
-        console.log(response);
+        sumbit();
+        setShowUpdateMessage(true);
+        setRepoURL("");
+        await wait(3000);
+        setShowUpdateMessage(false);
       } else {
         alert("Oops! Something went wrong. Please try again");
       }
-      //console.log(response.data);
     } catch (e) {
-      console.log(e.response.data.error);
+        alert("Oops! Something went wrong. Please try again");
     }
   }
 
@@ -162,6 +169,11 @@ export default function MainPage() {
             alignItems="center"
             justifyContent="center"
           >
+            {showUpdateMessage && (
+            <Typography color="error">
+              Updated
+            </Typography>
+          )}
             {Object.keys(data).map((item) => {
               return (
                 <Grid item xs={10} style={{ float: "left" }}>
@@ -174,10 +186,11 @@ export default function MainPage() {
           </Grid>
           <TextField
             variant="outlined"
-            label="repoURL"
+            label="update repoURL"
+            value={repoURL}
             style={{ width: 400 }}
             className={classes.textfield}
-            onChange={(e) => setSecret(e.target.value.trim().toLowerCase())}
+            onChange={(e) => setRepoURL(e.target.value.trim().toLowerCase())}
             error={isError(secret.length === 0)}
             helperText={
               isError(secret.length === 0) && "Please enter your secret!"
